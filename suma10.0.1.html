@@ -5,28 +5,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <style>
-<meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<style>
-<meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<!DOCTYPE html><html class="light" lang="en"><head>
-<meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;
-500;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap"
- rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:w
-ght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></scri
-pt>
-<style>
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
@@ -39,4 +17,430 @@ pt>
             background: transparent;
         }
         body {
-<style>
+            min-height: 100dvh;
+            background-color: #f8fafc;
+        }
+        .tile-selected {
+            background-color: #00647c !important;
+            color: white !important;
+            transform: scale(0.95);
+            z-index: 10;
+        }
+        .tile-hint {
+            animation: pulse-hint 1.5s infinite;
+            background-color: #e0f2fe !important;
+        }
+        @keyframes pulse-hint {
+            0% { box-shadow: inset 0 0 0 0 rgba(0, 100, 124, 0.7); }
+            70% { box-shadow: inset 0 0 0 10px rgba(0, 100, 124, 0); }
+            100% { box-shadow: inset 0 0 0 0 rgba(0, 100, 124, 0); }
+        }
+        .floating-score {
+            animation: float-up 1s ease-out forwards;
+        }
+        @keyframes float-up {
+            0% { transform: translate(-50%, 0); opacity: 1; }
+            100% { transform: translate(-50%, -100px); opacity: 0; }
+        }
+    
+        #game-grid {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            width: 100%;
+            background-color: #000000; /* Uniform black lines */
+            gap: 1px;
+            border: 1px solid #000000;
+        }
+        .grid-tile {
+            background-color: #ffffff;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .indicator-tile {
+            transition: all 0.3s ease;
+        }
+        .indicator-cleared {
+            color: #94a3b8 !important;
+            font-weight: 400 !important;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 font-body text-slate-900 antialiased">
+<header class="w-full top-0 sticky z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
+<div class="flex justify-between items-center px-4 py-3 w-full max-w-xl mx-auto">
+<div class="flex items-center gap-2">
+<button class="text-[#00647c]" style="">
+<span class="material-symbols-outlined" data-icon="grid_view" style="">grid_view</span>
+</button>
+<h1 class="font-headline font-bold text-[#00647c] text-lg leading-tight" style="">Sum 10 - Amb Quadrícula</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex flex-col items-center">
+<span class="text-[9px] uppercase font-bold text-slate-500" style="">Nivell</span>
+<span class="text-slate-900 font-bold" id="level-display" style="">1</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="text-[9px] uppercase font-bold text-slate-500" style="">Puntuació</span>
+<span class="text-slate-900 font-bold" id="score-display" style="">0</span>
+</div>
+<button class="text-slate-400" style="">
+<span class="material-symbols-outlined" data-icon="settings" style="">settings</span>
+</button>
+</div>
+</div>
+</header>
+<main class="max-w-xl mx-auto px-0 pb-32 pt-2 relative">
+<!-- Number Progress Row -->
+<div class="px-4 mb-4">
+<div class="grid grid-cols-9 w-full text-center py-2 bg-white rounded-lg shadow-sm border border-slate-100">
+<div class="indicator-tile text-sm font-bold text-black" id="indicator-1" style="">1</div>
+<div class="indicator-tile text-sm font-bold text-black" id="indicator-2" style="">2</div>
+<div class="indicator-tile text-sm font-bold text-black" id="indicator-3" style="">3</div>
+<div class="indicator-tile text-sm font-bold text-black" id="indicator-4" style="">4</div>
+<div class="indicator-tile text-sm font-bold text-black" id="indicator-5" style="">5</div>
+<div class="indicator-tile text-sm font-bold text-black" id="indicator-6" style="">6</div>
+<div class="indicator-tile text-sm font-bold text-black" id="indicator-7" style="">7</div>
+<div class="indicator-tile text-sm font-bold text-black" id="indicator-8" style="">8</div>
+<div class="indicator-tile text-sm font-bold text-black" id="indicator-9" style="">9</div>
+</div>
+</div>
+<!-- Game Board Container -->
+<div class="relative w-full">
+<div id="game-grid"><div class="grid-tile transition-all duration-150" data-index="0">7</div><div class="grid-tile transition-all duration-150" data-index="1">8</div><div class="grid-tile transition-all duration-150" data-index="2">4</div><div class="grid-tile transition-all duration-150" data-index="3">2</div><div class="grid-tile transition-all duration-150" data-index="4">2</div><div class="grid-tile transition-all duration-150" data-index="5">8</div><div class="grid-tile transition-all duration-150" data-index="6">5</div><div class="grid-tile transition-all duration-150" data-index="7">1</div><div class="grid-tile transition-all duration-150" data-index="8">7</div><div class="grid-tile transition-all duration-150" data-index="9">6</div><div class="grid-tile transition-all duration-150" data-index="10">4</div><div class="grid-tile transition-all duration-150" data-index="11">3</div><div class="grid-tile transition-all duration-150" data-index="12">3</div><div class="grid-tile transition-all duration-150" data-index="13">5</div><div class="grid-tile transition-all duration-150" data-index="14">2</div><div class="grid-tile transition-all duration-150" data-index="15">4</div><div class="grid-tile transition-all duration-150" data-index="16">8</div><div class="grid-tile transition-all duration-150" data-index="17">7</div><div class="grid-tile transition-all duration-150" data-index="18">9</div><div class="grid-tile transition-all duration-150" data-index="19">1</div><div class="grid-tile transition-all duration-150" data-index="20">7</div><div class="grid-tile transition-all duration-150" data-index="21">7</div><div class="grid-tile transition-all duration-150" data-index="22">4</div><div class="grid-tile transition-all duration-150" data-index="23">9</div><div class="grid-tile transition-all duration-150" data-index="24">4</div><div class="grid-tile transition-all duration-150" data-index="25">9</div><div class="grid-tile transition-all duration-150" data-index="26">1</div><div class="grid-tile transition-all duration-150" data-index="27">6</div><div class="grid-tile transition-all duration-150" data-index="28">3</div><div class="grid-tile transition-all duration-150" data-index="29">8</div><div class="grid-tile transition-all duration-150" data-index="30">9</div><div class="grid-tile transition-all duration-150" data-index="31">8</div><div class="grid-tile transition-all duration-150" data-index="32">8</div><div class="grid-tile transition-all duration-150" data-index="33">6</div><div class="grid-tile transition-all duration-150" data-index="34">4</div><div class="grid-tile transition-all duration-150" data-index="35">7</div><div class="grid-tile transition-all duration-150" data-index="36">5</div><div class="grid-tile transition-all duration-150" data-index="37">9</div><div class="grid-tile transition-all duration-150" data-index="38">9</div><div class="grid-tile transition-all duration-150" data-index="39">9</div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div><div class="grid-tile transition-all duration-150"></div></div>
+<!-- Next Wave Overlay -->
+<div class="hidden absolute inset-0 bg-white/90 backdrop-blur-md z-40 flex flex-col items-center justify-center p-6 text-center" id="game-over-overlay">
+<h3 class="font-bold text-2xl text-slate-900 mb-2" style="">No more moves!</h3>
+<p class="text-slate-600 mb-6 text-sm" style="">Generating new numbers from active values...</p>
+<button class="bg-[#00647c] text-white px-10 py-3 rounded-full font-bold shadow-lg active:scale-95 transition-all" onclick="addNumbers()" style="">
+                Add 40 Numbers
+            </button>
+</div>
+</div>
+<!-- Scroll Hint -->
+<div class="w-full flex justify-center py-10">
+<div class="flex flex-col items-center gap-1 opacity-20">
+<span class="text-[10px] font-bold uppercase" style="">More Slots Below</span>
+<span class="material-symbols-outlined" data-icon="keyboard_double_arrow_down" style="">keyboard_double_arrow_down</span>
+</div>
+</div>
+</main>
+<!-- Floating Score Container -->
+<div class="fixed inset-0 pointer-events-none z-50" id="score-float-container"></div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-end px-6 pb-6 pt-4 bg-white/80 backdrop-blur-xl border-t border-slate-200">
+<button class="flex flex-col items-center gap-1 text-slate-400 hover:text-[#00647c] transition-colors" onclick="undoMove()" style="">
+<span class="material-symbols-outlined" data-icon="undo" style="">undo</span>
+<span class="text-[9px] font-bold uppercase" style="">Desfés</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400 hover:text-[#00647c] transition-colors" onclick="showHint()" style="">
+<div class="relative">
+<span class="material-symbols-outlined" data-icon="lightbulb" style="">lightbulb</span>
+<span class="absolute -top-1 -right-1 bg-[#00647c] text-white text-[8px] w-4 h-4 rounded-full flex items-center justify-center border-2 border-white" id="hint-count" style="">2</span>
+</div>
+<span class="text-[9px] font-bold uppercase" style="">Pista</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-[#4dc9f1] text-white w-16 h-16 rounded-full shadow-lg -translate-y-4 active:scale-95 transition-all" onclick="shuffleBoard()" style="">
+<span class="material-symbols-outlined !text-3xl" data-icon="shuffle" style="">shuffle</span>
+<span class="text-[8px] font-bold uppercase" style="">Mescla</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400 hover:text-[#00647c] transition-colors" style="">
+<span class="material-symbols-outlined" data-icon="rocket_launch" style="">rocket_launch</span>
+<span class="text-[9px] font-bold uppercase" style="">Boost</span>
+</button>
+</nav>
+<script>
+    const COLS = 9;
+    const ROWS = 25;
+    let numbers = []; // Flat array of numbers or null
+    let score = 0;
+    let level = 1;
+    let selectedIndex = null;
+    let hintsLeft = 3;
+    let history = [];
+
+    const grid = document.getElementById('game-grid');
+    const scoreDisplay = document.getElementById('score-display');
+    const levelDisplay = document.getElementById('level-display');
+    const overlay = document.getElementById('game-over-overlay');
+    const hintCountDisplay = document.getElementById('hint-count');
+
+    function initGame() {
+        numbers = [];
+        addNumbers(40, true);
+        updateUI();
+    }
+
+    function addNumbers(count = 40, initial = false) {
+        let pool = [];
+        if (initial) {
+            pool = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        } else {
+            const currentValues = new Set(numbers.filter(n => n !== null));
+            pool = Array.from(currentValues);
+            if (pool.length === 0) pool = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        }
+
+        const newNums = [];
+        for (let i = 0; i < count; i++) {
+            newNums.push(pool[Math.floor(Math.random() * pool.length)]);
+        }
+
+        // Fill null spots first if they exist at the end, otherwise push
+        numbers = numbers.concat(newNums);
+        
+        overlay.classList.add('hidden');
+        renderBoard();
+        checkMoves();
+        updateIndicators();
+    }
+
+    function renderBoard() {
+        grid.innerHTML = '';
+        // Always render at least a full grid 9x25
+        const totalToRender = Math.max(numbers.length, COLS * ROWS);
+        
+        for (let i = 0; i < totalToRender; i++) {
+            const tile = document.createElement('div');
+            tile.className = 'grid-tile transition-all duration-150';
+            
+            const num = i < numbers.length ? numbers[i] : null;
+            
+            if (num !== null) {
+                tile.innerText = num;
+                tile.dataset.index = i;
+                tile.onclick = () => handleTileClick(i);
+                if (selectedIndex === i) tile.classList.add('tile-selected');
+            } else {
+                tile.innerText = '';
+            }
+            grid.appendChild(tile);
+        }
+        checkEmptyRows();
+    }
+
+    function handleTileClick(index) {
+        if (selectedIndex === null) {
+            selectedIndex = index;
+            renderBoard();
+        } else if (selectedIndex === index) {
+            selectedIndex = null;
+            renderBoard();
+        } else {
+            const num1 = numbers[selectedIndex];
+            const num2 = numbers[index];
+
+            if (num1 !== null && num2 !== null) {
+                const canMatch = (num1 + num2 === 10) || (num1 === num2);
+                if (canMatch && areAdjacent(selectedIndex, index)) {
+                    processMatch(selectedIndex, index);
+                } else {
+                    selectedIndex = index;
+                    renderBoard();
+                }
+            } else {
+                selectedIndex = index;
+                renderBoard();
+            }
+        }
+    }
+
+    function areAdjacent(idx1, idx2) {
+        const start = Math.min(idx1, idx2);
+        const end = Math.max(idx1, idx2);
+
+        const r1 = Math.floor(idx1 / COLS), c1 = idx1 % COLS;
+        const r2 = Math.floor(idx2 / COLS), c2 = idx2 % COLS;
+
+        // Path check helper
+        const isPathClear = (s, e, step) => {
+            for (let i = s + step; i < e; i += step) {
+                if (numbers[i] !== null) return false;
+            }
+            return true;
+        };
+
+        // Linear Adjacency (Horizontal wrapping path)
+        let onlyNullBetween = true;
+        for (let i = start + 1; i < end; i++) {
+            if (numbers[i] !== null) {
+                onlyNullBetween = false;
+                break;
+            }
+        }
+        if (onlyNullBetween) return true;
+
+        // Vertical Adjacency
+        if (c1 === c2) {
+            if (isPathClear(start, end, COLS)) return true;
+        }
+
+        // Diagonal Adjacency
+        const rowDiff = Math.abs(r1 - r2);
+        const colDiff = Math.abs(c1 - c2);
+        if (rowDiff === colDiff) {
+            const rowDir = r2 > r1 ? 1 : -1;
+            const colDir = c2 > c1 ? 1 : -1;
+            const step = (rowDir * COLS) + colDir;
+            
+            let diagClear = true;
+            let current = idx1 + step;
+            while (current !== idx2) {
+                if (numbers[current] !== null) {
+                    diagClear = false;
+                    break;
+                }
+                current += step;
+            }
+            if (diagClear) return true;
+        }
+
+        return false;
+    }
+
+    function processMatch(idx1, idx2) {
+        history.push([...numbers]);
+        if (history.length > 20) history.shift();
+
+        showFloatingScore(10);
+        score += 10;
+        
+        numbers[idx1] = null;
+        numbers[idx2] = null;
+        selectedIndex = null;
+        
+        renderBoard();
+        updateUI();
+        checkMoves();
+        updateIndicators();
+    }
+
+    function updateIndicators() {
+        const currentValues = new Set(numbers.filter(n => n !== null));
+        for (let i = 1; i <= 9; i++) {
+            const indicator = document.getElementById(`indicator-${i}`);
+            if (currentValues.has(i)) {
+                indicator.classList.remove('indicator-cleared');
+            } else {
+                indicator.classList.add('indicator-cleared');
+            }
+        }
+    }
+
+    function checkEmptyRows() {
+        let changed = false;
+        // Start from bottom and check COLS blocks
+        for (let i = Math.floor((numbers.length - 1) / COLS) * COLS; i >= 0; i -= COLS) {
+            const row = numbers.slice(i, i + COLS);
+            if (row.length === COLS && row.every(n => n === null)) {
+                numbers.splice(i, COLS);
+                score += 50;
+                changed = true;
+            }
+        }
+        
+        // Remove trailing nulls to keep data clean
+        while(numbers.length > 0 && numbers[numbers.length - 1] === null) {
+            numbers.pop();
+            changed = true;
+        }
+
+        if (changed) {
+            renderBoard();
+            updateUI();
+            updateIndicators();
+        }
+    }
+
+    function checkMoves() {
+        const actives = numbers.map((n, i) => n !== null ? i : -1).filter(i => i !== -1);
+        let hasMoves = false;
+
+        for (let i = 0; i < actives.length; i++) {
+            for (let j = i + 1; j < actives.length; j++) {
+                const idx1 = actives[i];
+                const idx2 = actives[j];
+                const n1 = numbers[idx1], n2 = numbers[idx2];
+                if ((n1 + n2 === 10 || n1 === n2) && areAdjacent(idx1, idx2)) {
+                    hasMoves = true;
+                    break;
+                }
+            }
+            if (hasMoves) break;
+        }
+
+        if (!hasMoves && numbers.some(n => n !== null)) {
+            overlay.classList.remove('hidden');
+        } else if (numbers.length === 0 || !numbers.some(n => n !== null)) {
+            level++;
+            addNumbers(40, true);
+        }
+    }
+
+    function showHint() {
+        if (hintsLeft <= 0) return;
+        const actives = numbers.map((n, i) => n !== null ? i : -1).filter(i => i !== -1);
+        for (let i = 0; i < actives.length; i++) {
+            for (let j = i + 1; j < actives.length; j++) {
+                const idx1 = actives[i];
+                const idx2 = actives[j];
+                if ((numbers[idx1] + numbers[idx2] === 10 || numbers[idx1] === numbers[idx2]) && areAdjacent(idx1, idx2)) {
+                    const tiles = grid.children;
+                    tiles[idx1].classList.add('tile-hint');
+                    tiles[idx2].classList.add('tile-hint');
+                    setTimeout(() => {
+                        tiles[idx1]?.classList.remove('tile-hint');
+                        tiles[idx2]?.classList.remove('tile-hint');
+                    }, 2000);
+                    hintsLeft--;
+                    updateUI();
+                    return;
+                }
+            }
+        }
+    }
+
+    function shuffleBoard() {
+        const filtered = numbers.filter(n => n !== null);
+        for (let i = filtered.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [filtered[i], filtered[j]] = [filtered[j], filtered[i]];
+        }
+        let fIdx = 0;
+        numbers = numbers.map(n => n === null ? null : filtered[fIdx++]);
+        renderBoard();
+        checkMoves();
+    }
+
+    function undoMove() {
+        if (history.length > 0) {
+            numbers = history.pop();
+            selectedIndex = null;
+            renderBoard();
+            updateIndicators();
+            checkMoves();
+        }
+    }
+
+    function updateUI() {
+        scoreDisplay.innerText = score;
+        levelDisplay.innerText = level;
+        hintCountDisplay.innerText = hintsLeft;
+    }
+
+    function showFloatingScore(pts) {
+        const float = document.createElement('div');
+        float.className = 'absolute left-1/2 top-1/2 -translate-x-1/2 pointer-events-none z-50';
+        float.innerHTML = `<span class="font-bold text-3xl text-[#00647c] floating-score">+${pts}</span>`;
+        document.getElementById('score-float-container').appendChild(float);
+        setTimeout(() => float.remove(), 1000);
+    }
+
+    initGame();
+</script>
+</body></html>
